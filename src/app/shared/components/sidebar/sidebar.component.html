@@ -1,1 +1,18 @@
-<p>sidebar works!</p>
+<aside class="bg-gray-900 text-white w-64 min-h-screen p-4">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold">TaskFlow</h1>
+    </div>
+  <nav class="space-y-2">
+    <a *ngFor="let link of sidebarLinks"
+       routerLink="{{link.route}}"
+       routerLinkActive="bg-gray-800 font-semibold"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors">
+        <lucide-icon [img]="link.icon" [size]="20"></lucide-icon>
+        <span>{{link.name}}</span>
+    </a>
+  </nav>
+</aside>
+
+
+
+<!-- *ngFor , directive to looping through sidebarLinks array and create a link for each item -->
