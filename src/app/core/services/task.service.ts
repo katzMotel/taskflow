@@ -117,7 +117,7 @@ export class TaskService{
         const tasks = this.tasksSubject.value;
 
         // Find index of task to update
-        const index = tasks.findIndex(task => task.iid === id);
+        const index = tasks.findIndex(task => task.id === id);
         if(index === -1) return null; //task not found
 
         //Merge existing task with updates from DTO to create updated task
