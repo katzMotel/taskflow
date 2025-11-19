@@ -144,7 +144,7 @@ export class TaskService{
         if(tasks.length === this.tasksSubject.value.length){
             return false; //no task was deleted. ID not found
         }
-        if(tasks.length === this.tasksSubject.value.length) return false; //no task was deleted. ID not found
+        
 
         //Save updated tasks array
         this.saveTasks(tasks);
