@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {v4 as uuidv4} from 'uuid';
 import {Task, CreateTaskDto, UpdateTaskDto, TaskStatus} from '../models/task.model';
 import {StorageService} from './storage.service';
+import {ProjectService} from './project.service';
 // TASK SERVICE
 
 // This service manages all task-related operations (CRUD).
@@ -32,8 +33,12 @@ export class TaskService{
 
     //Constructor
     //Angular's dependency injection provides StorageService instance
-    constructor(private storageService: StorageService){
+    constructor(private storageService: StorageService,private projectService: ProjectService){
         this.loadTasks();
+        //if there are no tasks, create sample tasks
+        if(this.tasksSubject.value.length === 0){
+            this.initializeSampleTasks();
+        }
     }
     //Load tasks from local storage on service initialization
     private loadTasks(): void{
@@ -155,5 +160,40 @@ export class TaskService{
     ///UPDATE TASK STATUS
     updateTaskStatus(id: string, status: TaskStatus): Task | null{
         return this.updateTask(id, {status});
+    }
+    //INITIALIZE SAMPLE TASKS
+    private initializeSampleTasks(): void{
+        const sampleTasks: CreateTaskDto[] = [
+            {
+                title: 'Design Landing Page',
+                description: 'Create wireframes and mockups for the new landing page.',
+                priority: 'high',
+                projectId: this.projectService.getDefaultProjectId(),
+                dueDate: new Date(new Date().setDate(new Date().getDate() + 7)),
+                estimatedTime: 10,
+                tags: ['design', 'frontend']
+            },
+            {
+                title: 'Set Up Database',
+                description: 'Install and configure PostgreSQL database for the application.',
+                priority: 'medium',
+                projectId: 'project-1',
+                dueDate: new Date(new Date().setDate(new Date().getDate() + 14)),
+                estimatedTime: 8,
+                tags: ['backend', 'database']
+            },
+            {
+                title: 'Implement Authentication',
+                description: 'Add user authentication using JWT tokens.',
+                priority: 'high',
+                projectId: 'project-2',
+                dueDate: new Date(new Date().setDate(new Date().getDate() + 10)),
+                estimatedTime: 12,
+                tags: ['backend', 'security']
+            }
+        ];
+
+        //Create each sample task
+        sampleTasks.forEach(dto => this.createTask(dto));
     }
 }

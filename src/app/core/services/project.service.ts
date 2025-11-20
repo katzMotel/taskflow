@@ -41,6 +41,11 @@ export class ProjectService{
         this.projectsSubject.next(projects);
     }
 
+
+    //helper method for default project
+    getDefaultProjectId(): string{
+        return this.projectsSubject.value[0]?.id || '';
+    }
     //ENSURE DEFAULT PROJECT EXISTS
     // new users need at least one project to assign tasks to,
     // This is called when the service initializes.

@@ -1,1 +1,31 @@
-<p>dashboard works!</p>
+<div class="container">
+    <h1 class="text-4xl font-bold mb-6">Task Dashboard</h1>
+    <div class="grid gap-6 grid-cols-3">
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-3xl font-bold">Total Tasks </p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ totalTasks }}</p>
+        </div>
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-3xl font-bold">Completed Tasks </p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ completedTasks }}</p>
+        </div>
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-3xl font-bold">In Progress Tasks </p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ inProgressTasks }}</p>
+        </div>
+    </div>
+    <div class="container">
+        <h2 class="text-2xl font-bold mt-8 mb-4">Recent Tasks</h2>
+        <ul>
+            <li *ngFor="let task of recentTasks" class="bg-white rounded-lg shadow-md p-4 mb-2">
+                <h3 class="text-xl font-semibold">{{ task.title }}</h3>
+                <p class="text-gray-600">{{ task.description }}</p>
+                <p class="text-sm text-gray-500">Status: {{ task.status }}</p>
+                <p class="text-sm text-gray-500">Created At: {{ task.createdAt | date:'short' }}</p>
+                <p class="text-sm text-gray-500">Due Date: {{ task.dueDate | date:'short' }}</p>
+                <p class="text-sm text-gray-500">Priority: {{ task.priority }}</p>
+                <p class="text-sm text-gray-500">Project: {{ task.projectId }}</p>
+            </li>
+        </ul>
+    </div>
+</div>
