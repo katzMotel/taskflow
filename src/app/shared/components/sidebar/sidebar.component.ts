@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input,Output ,EventEmitter} from '@angular/core';
 import { RouterLink ,RouterLinkActive} from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule , Home, BarChart3, KanbanSquare, CheckSquare, Settings, LucideIconData} from 'lucide-angular';
+import { LucideAngularModule ,X, Home, BarChart3, KanbanSquare, CheckSquare, Settings, LucideIconData} from 'lucide-angular';
 interface NavLink {
   name: string;
   route: string;
@@ -18,6 +18,9 @@ interface NavLink {
 
 
 export class SidebarComponent {
+  X = X;
+  @Output() toggleSidebar = new EventEmitter<void>();
+  @Input() isSidebarOpen: boolean = false;
   // an array for sidebar items
   sidebarLinks: NavLink[] = [
     {name: 'Dashboard', route: '/dashboard',icon:Home},
@@ -26,4 +29,7 @@ export class SidebarComponent {
     {name: 'Tasks', route: '/tasks',icon:CheckSquare},
     {name: 'Settings', route: '/settings',icon:Settings}
   ]
+  onToggleSidebar(){
+    this.toggleSidebar.emit();
+  }
 }

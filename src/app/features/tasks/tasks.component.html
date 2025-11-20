@@ -1,1 +1,122 @@
-<p>tasks works!</p>
+<div class="container mx-auto p-4">
+
+  <div class="flex gap-4 mb-4">
+  <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      (click)="openModal()">
+    New Task
+  </button>
+  <input type="text" 
+         placeholder="Search tasks..."
+         class="input flex-1"
+         [(ngModel)]="searchTerm"
+         (input)="applyFilter()">
+  
+  <select class="p-2 border rounded" [(ngModel)]="sortBy" (change)="applyFilter()">
+    <option value="dueDate">Due Date</option>
+    <option value="priority">Priority</option>
+    <option value="title">Title</option>
+  </select>
+</div>
+  <div class="mb-6 flex gap-2">
+    <button class="px-4 py-2 rounded text-white transition-colors"
+        [ngClass]="statusFilter === 'all' ? 'bg-slate-600' : 'bg-slate-400'"
+        (click)="setFilter('all')">
+  All
+</button>
+    <button class="px-4 py-2 rounded text-white transition-colors"
+        [ngClass]="statusFilter === 'todo' ? 'bg-slate-600' : 'bg-slate-400'"
+        (click)="setFilter('todo')">
+  Todo
+</button>
+    <button class="px-4 py-2 rounded text-white transition-colors"
+        [ngClass]="statusFilter === 'in-progress' ? 'bg-slate-600' : 'bg-slate-400'"
+        (click)="setFilter('in-progress')">
+  In Progress
+</button>
+    <button class="px-4 py-2 rounded text-white transition-colors"
+        [ngClass]="statusFilter === 'done' ? 'bg-slate-600' : 'bg-slate-400'"
+        (click)="setFilter('done')">
+  Done
+</button>
+  </div>
+  
+  
+</div>
+<div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto p-4">
+  <ng-container *ngFor="let task of tasks">
+    <div class="bg-white rounded-lg shadow p-4">
+      <h2 class="text-lg font-semibold">{{ task.title }}</h2>
+      <p class="text-gray-600">{{ task.description }}</p>
+      <span class="px-2 py-1 rounded text-xs font-semibold inline-block mt-2" 
+      [ngClass]="{
+        'bg-red-100 text-red-800': task.status === 'todo',
+        'bg-yellow-100 text-yellow-800': task.status === 'in-progress',
+        'bg-green-100 text-green-800': task.status === 'done'
+      }">
+  {{task.status}}
+</span>
+
+<span class="px-2 py-1 rounded text-xs font-semibold inline-block mt-2 ml-2" 
+      [ngClass]="{
+        'bg-green-100 text-green-800': task.priority === 'low',
+        'bg-yellow-100 text-yellow-800': task.priority === 'medium',
+        'bg-red-100 text-red-800': task.priority === 'high'
+      }">
+  {{task.priority}}
+</span>
+      <p class="text-gray-500 text-sm mt-2">Created: {{task.createdAt | date}}</p>
+      <p class="text-gray-500 text-sm mt-2">Due: {{task.dueDate | date}}</p>
+      <p class="text-gray-500 text-sm mt-2">{{task.projectId}}</p>
+    </div>
+  </ng-container>
+</div>
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 max-w-md w-full">
+    <!-- Modal content here -->
+    
+    <form (ngSubmit)="createTask()">
+        <div class="mb-4">
+            <label class="block mb-1">Title</label>
+            <input type="text" class="input w-full" [(ngModel)]="newTask.title" name="title" required>
+        </div>
+        <div class="mb-4">
+            <label class="block mb-1">Description</label>
+            <textarea class="input w-full" [(ngModel)]="newTask.description" name="description"></textarea>
+        </div>
+        <div class="mb-4">
+            <label class="block mb-1">Priority</label>
+            <select class="input w-full" [(ngModel)]="newTask.priority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block mb-1">Project</label>
+            <select class="input w-full" [(ngModel)]="newTask.projectId" name="projectId">
+              <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block mb-1">Due Date</label>
+            <input type="date" class="input w-full" [(ngModel)]="newTask.dueDate" name="dueDate">
+        </div>
+        <div class="mb-4">
+            <label class="block mb-1">Estimated Time (hours)</label>
+            <input type="number" class="input w-full" [(ngModel)]="newTask.estimatedTime" name="estimatedTime">
+        </div>
+<div class="flex gap-4 justify-center mt-6">
+  <button type="button" 
+          class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+          (click)="closeModal()">
+    Cancel
+  </button>
+  
+  <button type="submit" 
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+    Create Task
+  </button>
+</div>
+    </form>
+  </div>
+</div>

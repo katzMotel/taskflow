@@ -1,12 +1,25 @@
-<aside class="bg-gray-900 text-white w-64 min-h-screen p-4">
+<aside class="bg-gray-900 text-white w-64 min-h-screen p-4 
+              fixed top-0 left-0 z-50
+              transition-transform duration-300 ease-in-out
+              lg:static lg:translate-x-0"
+       [ngClass]="{
+         '-translate-x-full': !isSidebarOpen,
+         'translate-x-0': isSidebarOpen
+       }">
     <div class="mb-8">
         <h1 class="text-2xl font-bold">TaskFlow</h1>
+    </div>
+    <div class="flex justify-end mb-4 lg:hidden">
+      <button class="block lg:hidden mb-4" (click)="onToggleSidebar()">
+          <lucide-icon [img]="X" [size]="24"></lucide-icon>
+      </button>
     </div>
   <nav class="space-y-2">
     <a *ngFor="let link of sidebarLinks"
        routerLink="{{link.route}}"
        routerLinkActive="bg-gray-800 font-semibold"
-       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors">
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+       (click)="onToggleSidebar()">
         <lucide-icon [img]="link.icon" [size]="20"></lucide-icon>
         <span>{{link.name}}</span>
     </a>

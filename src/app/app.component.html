@@ -1,7 +1,8 @@
 <div class="flex h-screen">
-  <app-sidebar></app-sidebar>
+  <app-sidebar [isSidebarOpen]="isSidebarOpen"
+               (toggleSidebar)="toggleSidebar()"></app-sidebar>
   <div class="flex-1 flex flex-col">
-    <app-header></app-header>
+    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
     <main class="flex-1 overflow-auto p-6">
       <router-outlet />
     </main>

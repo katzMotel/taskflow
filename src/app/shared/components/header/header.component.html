@@ -1,1 +1,10 @@
-<p>header works!</p>
+<header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <button class="block lg:hidden">
+        <lucide-icon [img]="Menu" [size]="24" (click)="onToggleSidebar()"></lucide-icon>
+    </button>
+    <button class="ml-auto flex items-center gap-2">
+        <lucide-icon [img]="User" [size]="24"></lucide-icon>
+    </button>
+
+    
+</header>
