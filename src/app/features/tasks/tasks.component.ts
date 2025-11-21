@@ -5,13 +5,15 @@ import { Task, TaskPriority } from '../../core/models/task.model';
 import { FormsModule } from '@angular/forms';
 import { Project } from '../../core/models/project.model';
 import { ProjectService } from '../../core/services/project.service';
+import { LucideAngularModule, Trash2 } from 'lucide-angular';
 @Component({
   selector: 'app-tasks',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent {
+  Trash2 = Trash2;
   tasks: Task[] = [];
   projects: Project[] = [];
   statusFilter: string = 'all';
@@ -116,5 +118,8 @@ createTask(){
     dueDate: undefined,
     estimatedTime: undefined
   };
+}
+deleteTask(taskId: string){
+  this.taskService.deleteTask(taskId);  
 }
 }

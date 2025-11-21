@@ -19,6 +19,7 @@ interface NavLink {
 
 export class SidebarComponent {
   X = X;
+  
   @Output() toggleSidebar = new EventEmitter<void>();
   @Input() isSidebarOpen: boolean = false;
   // an array for sidebar items
