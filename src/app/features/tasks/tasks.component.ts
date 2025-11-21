@@ -5,7 +5,7 @@ import { Task, TaskPriority } from '../../core/models/task.model';
 import { FormsModule } from '@angular/forms';
 import { Project } from '../../core/models/project.model';
 import { ProjectService } from '../../core/services/project.service';
-import { LucideAngularModule, Trash2 } from 'lucide-angular';
+import { LucideAngularModule, Trash2,Edit2 } from 'lucide-angular';
 @Component({
   selector: 'app-tasks',
   imports: [CommonModule, FormsModule, LucideAngularModule],
@@ -14,6 +14,8 @@ import { LucideAngularModule, Trash2 } from 'lucide-angular';
 })
 export class TasksComponent {
   Trash2 = Trash2;
+  Edit2 = Edit2;
+
   tasks: Task[] = [];
   projects: Project[] = [];
   statusFilter: string = 'all';
@@ -21,6 +23,8 @@ export class TasksComponent {
   searchTerm: string = '';
   sortBy: string = 'dueDate';
   isModalOpen: boolean = false;
+  isEditMode: boolean = false;
+  editingTaskId: string |null = null;
   newTask: {
   title: string;
   description: string;
@@ -89,22 +93,56 @@ export class TasksComponent {
     }
     return result;
   }
-  openModal(){
+  openCreateModal(){
     this.isModalOpen= true;
   }
-  closeModal(){
-    this.isModalOpen= false;
+  
+  openEditModal(task:Task){
+    this.isEditMode = true;
+    this.editingTaskId = task.id;
+    this.newTask = {
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      projectId: task.projectId,
+      dueDate: task.dueDate,
+      estimatedTime: task.estimatedTime
+    };
+    this.isModalOpen = true;
   }
-createTask(){
+  closeModal(){
+    this.isEditMode = false;
+    this.editingTaskId = null;
+    this.isModalOpen = false;
+    this.newTask ={
+      title: '',
+      description: '',
+      priority: 'medium',
+      projectId: '',
+      dueDate: undefined,
+      estimatedTime: undefined
+    };
+  } 
+saveTask(){
   // call tasService.createTask with newTask data
-  this.taskService.createTask({
-    title: this.newTask.title,
-    description: this.newTask.description,
-    priority: this.newTask.priority,
-    projectId: this.newTask.projectId,
-    dueDate: this.newTask.dueDate,
-    estimatedTime: this.newTask.estimatedTime
-  });
+  if(!this.isEditMode && this.editingTaskId){
+    this.taskService.updateTask(this.editingTaskId, {
+      title: this.newTask.title,
+      description: this.newTask.description,
+      priority: this.newTask.priority,
+      projectId: this.newTask.projectId,
+      dueDate: this.newTask.dueDate ? new Date(this.newTask.dueDate) : undefined,
+      estimatedTime: this.newTask.estimatedTime
+  });} else {
+    this.taskService.createTask({
+      title: this.newTask.title,
+      description: this.newTask.description,
+      priority: this.newTask.priority,
+      projectId: this.newTask.projectId,
+      dueDate: this.newTask.dueDate? new Date(this.newTask.dueDate) : undefined,
+      estimatedTime: this.newTask.estimatedTime
+    });
+  }
 
   //Close modal
   this.closeModal();
