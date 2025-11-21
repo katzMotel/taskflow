@@ -1,1 +1,20 @@
-<p>kanban works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto p-4">
+    <div
+        *ngFor="let column of kanbanColumns"
+        class="bg-white rounded-lg shadow-md p-4 flex flex-col"
+        cdkDropList
+        [id]="column.status"
+        [cdkDropListData]="column.tasks"
+        [cdkDropListConnectedTo]="['todo', 'in-progress', 'done']"
+        (cdkDropListDropped)="onTaskDrop($event, column.status)"
+    >
+        <h2 class="text-xl font-bold mb-4">{{ column.title }}</h2>
+        <div
+        *ngFor="let task of column.tasks"
+        class="bg-gray-100 rounded-md p-3 mb-3 cursor-move hover:bg-gray-200"
+        cdkDrag
+        >
+        {{ task.title }}
+        </div>
+    </div>
+</div>
