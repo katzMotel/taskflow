@@ -1,1 +1,56 @@
-<p>analytics works!</p>
+<div class="container mx-auto p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-xl font-bold">Total Tasks</p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ totalTasks }}</p>
+        </div>
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-xl font-bold">Completed Tasks</p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ completedTasks }}</p>
+        </div>
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-xl font-bold">In Progress</p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ inProgressTasks }}</p>
+        </div>
+        <div class="card bg-white rounded-lg shadow-md p-6">
+            <p class="text-gray-600 text-xl font-bold">Avg Time</p>
+            <p class="text-gray-800 text-5xl font-extrabold">{{ avgCompletionTime }}h</p>
+        </div>
+    </div>
+</div>
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Task Priority Analytics</h1>
+    <div style="display: block;">
+        <canvas baseChart
+            [data]="priorityChartData"
+            [type]="'bar'">
+        </canvas>
+    </div>
+</div>
+<div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Task Status Distribution</h1>
+    <div class="max-w-md mx-auto">
+        <canvas baseChart
+            [data]="statusChartData"
+            [type]="'pie'">
+        </canvas>
+    </div>
+</div>
+<div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Project Time Analysis</h1>
+    <div style="display: block;">
+        <canvas baseChart
+            [data]="projectTimeChartData"
+            [type]="'bar'">
+        </canvas>
+    </div>
+</div>
+<div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Task Completion Over Time</h1>
+    <div style="display: block;">
+        <canvas baseChart
+            [data]="completionTimeChartData"
+            [type]="'line'">
+        </canvas>
+    </div>
+</div>

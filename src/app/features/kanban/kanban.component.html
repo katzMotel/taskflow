@@ -9,12 +9,32 @@
         (cdkDropListDropped)="onTaskDrop($event, column.status)"
     >
         <h2 class="text-xl font-bold mb-4">{{ column.title }}</h2>
-        <div
-        *ngFor="let task of column.tasks"
-        class="bg-gray-100 rounded-md p-3 mb-3 cursor-move hover:bg-gray-200"
-        cdkDrag
-        >
-        {{ task.title }}
+       <div *ngFor="let task of column.tasks"
+             class="bg-gray-100 rounded-md p-3 mb-3 cursor-move hover:bg-gray-200"
+             cdkDrag>
+          
+          <!-- Task title -->
+          <div class="font-medium mb-2">{{ task.title }}</div>
+          
+          <!-- Timer buttons -->
+          <div class="flex gap-2">
+            <button *ngIf="!isTimerActive(task.id!)"
+                    aria-label="Start timer"
+                    class="text-green-500 hover:text-green-700"
+                    (click)="startTimer(task.id!)">
+              <lucide-icon [img]="PlayCircle" [size]="16"></lucide-icon>
+            </button>
+            
+            <button *ngIf="isTimerActive(task.id!)"
+                    aria-label="Stop timer"
+                    class="text-red-500 hover:text-red-700"
+                    (click)="stopTimer(task.id!)">
+              <lucide-icon [img]="StopCircle" [size]="16"></lucide-icon>
+            </button>
+            <span *ngIf="isTimerActive(task.id!)" class="text-xs text-gray-600 ml-1">
+              {{ getElapsedTime(task.id!) }}
+            </span>
+          </div>
         </div>
     </div>
-</div>
+</div>RetryClaude can make mistakes. Please double-check responses.

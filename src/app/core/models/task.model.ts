@@ -11,6 +11,7 @@ export interface Task {
     dueDate?: Date;
     createdAt: Date;
     updatedAt: Date;
+    completedAt?: Date;
     estimatedTime?: number; // minutes
     timeSpent: number; // minutes
     tags: string[];
@@ -28,5 +29,6 @@ export interface CreateTaskDto{
 export interface UpdateTaskDto extends Partial<CreateTaskDto>{
    status?: TaskStatus;
    timeSpent?: number;
+   completedAt?: Date;
 }
 

@@ -1,21 +1,24 @@
-import { Component } from '@angular/core';
+import { Component , OnInit, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskService } from '../../core/services/task.service';
 import { Task, TaskPriority } from '../../core/models/task.model';
 import { FormsModule } from '@angular/forms';
 import { Project } from '../../core/models/project.model';
 import { ProjectService } from '../../core/services/project.service';
-import { LucideAngularModule, Trash2,Edit2 } from 'lucide-angular';
+import { LucideAngularModule, Trash2,Edit2 ,PlayCircle, StopCircle} from 'lucide-angular';
+import { TimeEntryService } from '../../core/services/time-entry.service';
+import { min } from 'rxjs';
 @Component({
   selector: 'app-tasks',
   imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css'
 })
-export class TasksComponent {
+export class TasksComponent implements OnInit, OnDestroy {
   Trash2 = Trash2;
   Edit2 = Edit2;
-
+  PlayCircle = PlayCircle;
+  StopCircle = StopCircle;
   tasks: Task[] = [];
   projects: Project[] = [];
   statusFilter: string = 'all';
@@ -40,8 +43,12 @@ export class TasksComponent {
   dueDate: undefined,
   estimatedTime: undefined
 };
+activeTimers= new Map<string, string>();
+private timerInterval: any;
+
   constructor(private taskService: TaskService, 
-              private projectService: ProjectService
+              private projectService: ProjectService,
+              private timeEntryService: TimeEntryService
   ){}
   ngOnInit(){
     this.taskService.tasks$.subscribe(tasks => {
@@ -51,8 +58,23 @@ export class TasksComponent {
     this.projectService.projects$.subscribe(projects => {
       this.projects = projects;
     });
+    this.timerInterval = setInterval(() => {
+      // Trigger change detection for elapsed time updates
+    }, 60000); // Update every minute
   }
- 
+  ngOnDestroy(){
+    if(this.timerInterval){
+      clearInterval(this.timerInterval);
+    }
+  }
+  formatTime(minutes: number): string{
+    if(minutes < 60){
+      return `${minutes} m`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  }
   setFilter(status: string){
     this.statusFilter = status;
     this.applyFilter();
@@ -159,5 +181,36 @@ saveTask(){
 }
 deleteTask(taskId: string){
   this.taskService.deleteTask(taskId);  
+}
+isTimerActive(taskId: string): boolean{
+  return this.timeEntryService.getActiveTimer(taskId) !== null;
+}
+startTimer(taskId: string){
+  const entry = this.timeEntryService.startTimer(taskId);
+  if(entry){
+    this.activeTimers.set(taskId, entry.id);
+  }
+}
+stopTimer(taskId: string){
+  const activeEntry = this.timeEntryService.getActiveTimer(taskId);
+  if(activeEntry){
+    this.timeEntryService.stopTimer(activeEntry.id);
+    this.activeTimers.delete(taskId);
+  }
+}
+getElapsedTime(taskId: string): string{
+  const entry = this.timeEntryService.getActiveTimer(taskId);
+  if(!entry){
+    return '';
+  }
+  const elapsed = Math.floor((new Date().getTime() - entry.startTime.getTime())/1000/60);
+
+  if(elapsed < 60){
+    return `${elapsed} m`;
+  } else {
+    const hours = Math.floor(elapsed / 60);
+    const minutes = elapsed % 60;
+    return `${hours} h ${minutes} m`;
+  }
 }
 }

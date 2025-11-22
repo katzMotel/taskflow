@@ -159,7 +159,14 @@ export class TaskService{
 
     ///UPDATE TASK STATUS
     updateTaskStatus(id: string, status: TaskStatus): Task | null{
-        return this.updateTask(id, {status});
+        const updates: UpdateTaskDto = {status};
+        if(status === 'done'){
+            updates.completedAt = new Date();
+        }else{
+            updates.completedAt = undefined;
+        }
+        
+        return this.updateTask(id, updates);
     }
     //INITIALIZE SAMPLE TASKS
     private initializeSampleTasks(): void{

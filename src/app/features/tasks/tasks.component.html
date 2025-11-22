@@ -1,11 +1,14 @@
 <div class="container mx-auto p-4">
 
   <div class="flex gap-4 mb-4">
-  <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+  <button aria-label="New Task" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
       (click)="openCreateModal()">
     New Task
   </button>
-  <input type="text" 
+  <label for="search" class="sr-only">Search Tasks</label>
+  <input
+        id="search"
+        type="text"
          placeholder="Search tasks..."
          class="input flex-1"
          [(ngModel)]="searchTerm"
@@ -18,22 +21,22 @@
   </select>
 </div>
   <div class="mb-6 flex gap-2">
-    <button class="px-4 py-2 rounded text-white transition-colors"
+    <button aria-label="Filter All Tasks" class="px-4 py-2 rounded text-white transition-colors"
         [ngClass]="statusFilter === 'all' ? 'bg-slate-600' : 'bg-slate-400'"
         (click)="setFilter('all')">
   All
 </button>
-    <button class="px-4 py-2 rounded text-white transition-colors"
+    <button aria-label="Filter Todo Tasks" class="px-4 py-2 rounded text-white transition-colors"
         [ngClass]="statusFilter === 'todo' ? 'bg-slate-600' : 'bg-slate-400'"
         (click)="setFilter('todo')">
   Todo
 </button>
-    <button class="px-4 py-2 rounded text-white transition-colors"
+    <button aria-label="Filter In Progress Tasks" class="px-4 py-2 rounded text-white transition-colors"
         [ngClass]="statusFilter === 'in-progress' ? 'bg-slate-600' : 'bg-slate-400'"
         (click)="setFilter('in-progress')">
   In Progress
 </button>
-    <button class="px-4 py-2 rounded text-white transition-colors"
+    <button aria-label="Filter Done Tasks" class="px-4 py-2 rounded text-white transition-colors"
         [ngClass]="statusFilter === 'done' ? 'bg-slate-600' : 'bg-slate-400'"
         (click)="setFilter('done')">
   Done
@@ -45,14 +48,28 @@
 <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto p-4">
   <ng-container *ngFor="let task of tasks">
     <div class="bg-white rounded-lg shadow p-4">
-      <button class="float-right text-red-500 hover:text-red-700 ml-2"
+      <button aria-label="Delete Task" class="float-right text-red-500 hover:text-red-700 ml-2"
               (click)="deleteTask(task.id!)">
         <lucide-icon [img]="Trash2" size="16"></lucide-icon>
       </button>
-      <button class="float-right text-blue-500 hover:text-blue-700"
+      <button aria-label="Edit Task" class="float-right text-blue-500 hover:text-blue-700"
         (click)="openEditModal(task)">
         <lucide-icon [img]="Edit2" size="16"></lucide-icon>
       </button>
+      <button aria-label="Start Timer" class="float-right text-green-500 hover:text-green-700 mr-2"
+        *ngIf="!activeTimers.has(task.id!)"
+        (click)="startTimer(task.id!)">
+        <lucide-icon [img]="PlayCircle" size="16"></lucide-icon>
+      </button>
+      <button aria-label="Stop Timer" class="float-right text-yellow-500 hover:text-yellow-700 mr-2"
+        *ngIf="activeTimers.has(task.id!)"
+        (click)="stopTimer(task.id!)">
+        <lucide-icon [img]="StopCircle" size="16"></lucide-icon>
+      </button>
+      <span *ngIf="activeTimers.has(task.id!)" class="'text-xs text-gray-600 ml-1">
+        {{ getElapsedTime(task.id!) }}
+      </span>
+      
       <h2 class="text-lg font-semibold">{{ task.title }}</h2>
       <p class="text-gray-600">{{ task.description }}</p>
       <span class="px-2 py-1 rounded text-xs font-semibold inline-block mt-2" 
@@ -62,6 +79,7 @@
         'bg-green-100 text-green-800': task.status === 'done'
       }">
       {{task.status}}
+      
 </span>
 
 <span class="px-2 py-1 rounded text-xs font-semibold inline-block mt-2 ml-2" 
@@ -75,6 +93,7 @@
       <p class="text-gray-500 text-sm mt-2">Created: {{task.createdAt | date}}</p>
       <p class="text-gray-500 text-sm mt-2">Due: {{task.dueDate | date}}</p>
       <p class="text-gray-500 text-sm mt-2">{{task.projectId}}</p>
+      <p class="text-gray-500 text-sm mt-2">Total Time: {{formatTime(task.timeSpent || 0)}}</p>
     </div>
   </ng-container>
 </div>
@@ -85,15 +104,15 @@
     <form (ngSubmit)="saveTask()">
         <div class="mb-4">
             <label class="block mb-1">Title</label>
-            <input type="text" class="input w-full" [(ngModel)]="newTask.title" name="title" required>
+            <input id="title" type="text" class="input w-full" [(ngModel)]="newTask.title" name="title" required>
         </div>
         <div class="mb-4">
             <label class="block mb-1">Description</label>
-            <textarea class="input w-full" [(ngModel)]="newTask.description" name="description"></textarea>
+            <textarea id="description" class="input w-full" [(ngModel)]="newTask.description" name="description"></textarea>
         </div>
         <div class="mb-4">
             <label class="block mb-1">Priority</label>
-            <select class="input w-full" [(ngModel)]="newTask.priority" name="priority">
+            <select class="input w-full" [(ngModel)]="newTask.priority" name="priority" id="priority">
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
@@ -101,26 +120,28 @@
         </div>
         <div class="mb-4">
             <label class="block mb-1">Project</label>
-            <select class="input w-full" [(ngModel)]="newTask.projectId" name="projectId">
+            <select class="input w-full" [(ngModel)]="newTask.projectId" name="projectId" id="projectId">
               <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
             </select>
         </div>
         <div class="mb-4">
             <label class="block mb-1">Due Date</label>
-            <input type="date" class="input w-full" [(ngModel)]="newTask.dueDate" name="dueDate">
+            <input id="dueDate" type="date" class="input w-full" [(ngModel)]="newTask.dueDate" name="dueDate">
         </div>
         <div class="mb-4">
             <label class="block mb-1">Estimated Time (hours)</label>
-            <input type="number" class="input w-full" [(ngModel)]="newTask.estimatedTime" name="estimatedTime">
+            <input id="estimatedTime" type="number" class="input w-full" [(ngModel)]="newTask.estimatedTime" name="estimatedTime">
         </div>
 <div class="flex gap-4 justify-center mt-6">
-  <button type="button" 
+  <button aria-label="Cancel Task Modal"
+          type="button" 
           class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
           (click)="closeModal()">
     Cancel
   </button>
-  
-  <button type="submit" 
+
+  <button aria-label="Save Task Modal"
+          type="submit"
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
     {{isEditMode ? 'Update Task' : 'Create Task'}}
   </button>
