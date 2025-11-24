@@ -7,7 +7,7 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, RouterLink],  // Add these back!
+  imports: [CommonModule, LucideAngularModule, RouterLink], 
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleDropdown() {
-    alert('Button clicked!');
+    
     console.log('Dropdown toggled, current state:', this.isDropdownOpen);
     this.isDropdownOpen = !this.isDropdownOpen;
     console.log('New state:', this.isDropdownOpen);
