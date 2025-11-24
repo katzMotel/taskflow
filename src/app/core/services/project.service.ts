@@ -112,4 +112,7 @@ export class ProjectService{
         this.saveProjects(projects);
         return true;
     }
+    getAllProjects(): Project[]{
+        return this.projectsSubject.value;
+    }
 }

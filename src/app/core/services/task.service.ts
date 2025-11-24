@@ -203,4 +203,7 @@ export class TaskService{
         //Create each sample task
         sampleTasks.forEach(dto => this.createTask(dto));
     }
+    getAllTasks(): Task[]{
+        return this.tasksSubject.value;
+    }
 }

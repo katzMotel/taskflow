@@ -46,7 +46,7 @@
   
 </div>
 <div class="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto p-4">
-  <ng-container *ngFor="let task of tasks">
+  <ng-container *ngFor="let task of filteredTasks">
     <div class="bg-white rounded-lg shadow p-4">
       <button aria-label="Delete Task" class="float-right text-red-500 hover:text-red-700 ml-2"
               (click)="deleteTask(task.id!)">
@@ -66,7 +66,7 @@
         (click)="stopTimer(task.id!)">
         <lucide-icon [img]="StopCircle" size="16"></lucide-icon>
       </button>
-      <span *ngIf="activeTimers.has(task.id!)" class="'text-xs text-gray-600 ml-1">
+      <span *ngIf="isTimerActive(task.id!)" class="'text-xs text-gray-600 ml-1">
         {{ getElapsedTime(task.id!) }}
       </span>
       
@@ -92,7 +92,7 @@
 </span>
       <p class="text-gray-500 text-sm mt-2">Created: {{task.createdAt | date}}</p>
       <p class="text-gray-500 text-sm mt-2">Due: {{task.dueDate | date}}</p>
-      <p class="text-gray-500 text-sm mt-2">{{task.projectId}}</p>
+      <p class="text-gray-500 text-sm mt-2">{{getProjectName(task.projectId)}}</p>
       <p class="text-gray-500 text-sm mt-2">Total Time: {{formatTime(task.timeSpent || 0)}}</p>
     </div>
   </ng-container>

@@ -67,6 +67,13 @@ private timerInterval: any;
       clearInterval(this.timerInterval);
     }
   }
+  //GET PROJECT NAME
+  getProjectName(projectId: string): string{
+    const project = this.projects.find(p => p.id === projectId);
+    return project ? project.name : 'Unknown Project';
+  }
+
+  //FORMAT TIME
   formatTime(minutes: number): string{
     if(minutes < 60){
       return `${minutes} m`;
@@ -76,25 +83,36 @@ private timerInterval: any;
     return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
   }
   setFilter(status: string){
+    console.log('setFilter called with status:', status);
     this.statusFilter = status;
+    console.log('Current statusFilter:', this.statusFilter);
     this.applyFilter();
   }
 
-  applyFilter(){
-    let result = this.tasks;
-    if(this.statusFilter !== 'all'){
-      result = result.filter(task => task.status === this.statusFilter);
-    }
-    if (this.searchTerm){
-      this.filteredTasks = result.filter(task => {
-        return task.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-               task.description.toLowerCase().includes(this.searchTerm.toLowerCase());
-      });
-    } else {
-      this.filteredTasks = this.tasks.filter(task => task.status === this.statusFilter);
-    }
-    this.filteredTasks = this.applySort(this.filteredTasks);
+  applyFilter() {
+  console.log('applyFilter called');
+  console.log('Total tasks:', this.tasks.length);
+  console.log('Current statusFilter:', this.statusFilter);
+  let result = this.tasks;
+  
+  // First filter by status
+  if (this.statusFilter !== 'all') {
+    result = result.filter(task => task.status === this.statusFilter);
+    console.log('After status filter:', result.length);
   }
+  // Then filter by search term
+  if (this.searchTerm) {
+    result = result.filter(task => {
+      return task.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+             task.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+    });
+    console.log('After search filter:', result.length);
+  }
+  
+  // Apply sorting and set filtered tasks
+  this.filteredTasks = this.applySort(result);
+  console.log('Final filtered tasks:', this.filteredTasks.length);
+}
   applySort(filteredTasks: Task[]): Task[]{
     let result = [...filteredTasks];
     if(this.sortBy === 'dueDate'){
@@ -198,19 +216,19 @@ stopTimer(taskId: string){
     this.activeTimers.delete(taskId);
   }
 }
-getElapsedTime(taskId: string): string{
+getElapsedTime(taskId: string): string {
   const entry = this.timeEntryService.getActiveTimer(taskId);
-  if(!entry){
-    return '';
-  }
-  const elapsed = Math.floor((new Date().getTime() - entry.startTime.getTime())/1000/60);
-
-  if(elapsed < 60){
-    return `${elapsed} m`;
+  if (!entry || !entry.startTime) return '';  // Make sure we have a valid active timer
+  
+  const now = new Date();
+  const elapsed = Math.floor((now.getTime() - entry.startTime.getTime()) / 1000 / 60);
+  
+  if (elapsed < 60) {
+    return `${elapsed}m`;
   } else {
     const hours = Math.floor(elapsed / 60);
-    const minutes = elapsed % 60;
-    return `${hours} h ${minutes} m`;
+    const mins = elapsed % 60;
+    return `${hours}h ${mins}m`;
   }
 }
-}
+  }
