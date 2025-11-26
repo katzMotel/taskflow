@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskService } from '../../core/services/task.service';
 import { ProjectService } from '../../core/services/project.service';
+import { ThemeService } from '../../core/services/theme.service';
 @Component({
   selector: 'app-settings',
   imports: [CommonModule],
@@ -10,7 +11,11 @@ import { ProjectService } from '../../core/services/project.service';
 })
 export class SettingsComponent {
   constructor(private taskService: TaskService,
-              private projectService: ProjectService) { }
+              private projectService: ProjectService,
+              public themeService: ThemeService) { }
+  toggleDarkMode(){
+    this.themeService.toggleTheme();
+  }
   exportData(){
     //get all tasks and projects
     //Convert to JSON
